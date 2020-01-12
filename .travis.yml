@@ -2,7 +2,7 @@ sudo: false
 language: python
 python:
   - "2.7"
-  - "3.4"
+  - "3.7"
 env:
   - DJANGO=1.11.* DJANGO_SETTINGS_MODULE='settings_sqllite'
   - DJANGO=1.11.* DJANGO_SETTINGS_MODULE='settings_postgres'
@@ -39,3 +39,9 @@ matrix:
       env: DJANGO=2.0.* DJANGO_SETTINGS_MODULE='settings_postgres'
     - python: "2.7"
       env: DJANGO=2.0.* DJANGO_SETTINGS_MODULE='settings_mysql'
+    - python: "2.7"
+      env: DJANGO=2.2.* DJANGO_SETTINGS_MODULE='settings_sqllite'
+    - python: "2.7"
+      env: DJANGO=2.2.* DJANGO_SETTINGS_MODULE='settings_postgres'
+    - python: "2.7"
+      env: DJANGO=2.2.* DJANGO_SETTINGS_MODULE='settings_mysql'
