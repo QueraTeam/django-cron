@@ -66,11 +66,16 @@ class CronJobBase(object):
         return self.prev_success_cron
 
     @classmethod
+    def get_code(cls):
+        return cls.code
+
+    @classmethod
     def get_time_until_run(cls):
         from django_cron.models import CronJobLog
         try:
             last_job = CronJobLog.objects.filter(
-                code=cls.code).latest('start_time')
+                code=cls.code
+            ).latest('start_time')
         except CronJobLog.DoesNotExist:
             return timedelta()
         return (last_job.start_time +
@@ -292,6 +297,23 @@ class CronJobBase(object):
             )
 
         return future_run_datetimes
+
+
+class CronJobBaseWithCheckCancelCondition(CronJobBase):
+
+    def should_run_now(self, *args, **kwargs):
+        from django_cron.models import CronJobCancelCondition
+        now = datetime.now()
+        cancel = CronJobCancelCondition.objects.filter(
+            cron_job=self.get_code(),
+            cancel_from__lt=now,
+            cancel_to__gt=now
+        )
+        if cancel.exists():
+            return False
+        return super(CronJobBaseWithCheckCancelCondition, self).should_run_now(
+            *args, **kwargs
+        )
 
 
 class CronJobManager(object):

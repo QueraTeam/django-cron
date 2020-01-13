@@ -26,3 +26,14 @@ class CronJobLog(models.Model):
             ('code', 'start_time')  # useful when finding latest run (order by start_time) of cron
         ]
         app_label = 'django_cron'
+
+
+class CronJobCancelCondition(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    cron_job = models.CharField(null=False, max_length=256)
+    cancel_from = models.DateTimeField(null=False)
+    cancel_to = models.DateTimeField(null=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        app_label = 'django_cron'
