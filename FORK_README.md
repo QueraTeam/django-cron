@@ -1,22 +1,32 @@
 
 Summary of my fork changes
-=======================
-- Access to change CronJobManager from django settings if required.
+==========================
+### Access to change CronJobManager from django settings (optional)
 
 ```python
 CRON_MANAGER = 'path.to.custom.MyManager'
 ```
 
 ---
-- Add day config to CronJob schedule:
+### Add day config to CronJob schedule
+
+- Indexes start from zero.
+- Any value (default): `'*'`
+- Cron format:
+    - comma separated values: `'0,2,5'`
+    - step: `'*/3'` (=0,3,6,9,...)  , `'*/2+1'` (=1,3,5,...)
+    - range: `'5-10'` (=5,6,...,10)
+
+- List of `False/True` or `0/1`: [0, 0, 1, 0, 0, 1, ...]
 
 ```python
-day_of_month='*',  # cron format: '*/10+5' '5,15,25' or list: [1] * 31
-month_numbers='*',  # cron format: '*/3' '0,3,6,9' or list: [1] * 12
-day_of_week='*',  # cron format: '*/2' '2,4,6' or list: [1] * 7
+day_of_month='*',  # 0-30
+month_numbers='*',  # 0-11
+day_of_week='*',  # 0-6 (Sunday=0 ... Saturday=6)
 ```
 
 Example:
+
 ```python
 from django_cron import CronJobBase, Schedule
 
@@ -26,15 +36,15 @@ class ExampleCronJob(CronJobBase):
     code = 'cron.ExampleCronJob'
     def do(self):
         pass
-
 ```
 
 ---
-- Add a method to CronJob to get future run times in future by this parameters:
-`from_datetime` and `to_datetime`
+### Add a method to CronJob for get run times in future
+- Parameters: `from_datetime`, `to_datetime`
+
 
 ---
-- Move should_run_now method to CronJob to override it if required.
+## Move `should_run_now` method to CronJob to override it if required.
 
 Example:
 
