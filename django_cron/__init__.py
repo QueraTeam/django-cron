@@ -88,7 +88,10 @@ class CronJobBase(object):
         :param index: integer index that starts from 0.
         :return: a boolean that validate that index matches with validator.
         """
-        if isinstance(validator, list):
+        if validator == '*':
+            # any index is valid
+            return True
+        elif isinstance(validator, list):
             # Ex: [1, 1, 0, 0, 1, ...]
             return bool(validator[index])
         elif '*' in validator:
@@ -105,13 +108,13 @@ class CronJobBase(object):
 
     @classmethod
     def validate_date(cls, schedule, date):
-        today_month_day_index = date.day - 1
-        today_month_index = date.month - 1
-        today_week_day_index = date.weekday()
+        today_month_day_index = date.day - 1  # 0-30
+        today_month_index = date.month - 1  # 0-11
+        today_week_day_index = date.isoweekday() % 7  # 0-6
 
         result = cls.validate_dates_index(schedule.month_numbers, today_month_index) and \
-                 cls.validate_dates_index(schedule.day_of_month, today_month_day_index) and \
-                 cls.validate_dates_index(schedule.day_of_week, today_week_day_index)
+            cls.validate_dates_index(schedule.day_of_month, today_month_day_index) and \
+            cls.validate_dates_index(schedule.day_of_week, today_week_day_index)
 
         return result
 
