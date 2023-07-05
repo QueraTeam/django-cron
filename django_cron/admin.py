@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from django.contrib import admin
 from django.db.models import F
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django_cron.models import CronJobLog
 from django_cron.helpers import humanize_duration
@@ -31,6 +31,7 @@ class DurationFilter(admin.SimpleListFilter):
             return queryset.filter(end_time__gt=F('start_time') + timedelta(days=1))
 
 
+@admin.register(CronJobLog)
 class CronJobLogAdmin(admin.ModelAdmin):
     class Meta:
         model = CronJobLog
@@ -46,11 +47,12 @@ class CronJobLogAdmin(admin.ModelAdmin):
             return self.readonly_fields + tuple(names)
         return self.readonly_fields
 
+    @admin.display(
+        description=_("Duration"),
+        ordering='duration',
+    )
     def humanize_duration(self, obj):
         return humanize_duration(obj.end_time - obj.start_time)
 
-    humanize_duration.short_description = _("Duration")
-    humanize_duration.admin_order_field = 'duration'
 
 
-admin.site.register(CronJobLog, CronJobLogAdmin)

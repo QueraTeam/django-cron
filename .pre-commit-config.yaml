@@ -1,0 +1,9 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: "1.14.0"
+    hooks:
+      - id: django-upgrade
+        args: [--target-version, "4.2"]
+
