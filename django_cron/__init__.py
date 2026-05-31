@@ -13,7 +13,6 @@ logger = logging.getLogger('django_cron')
 
 def get_class(kls):
     """
-    TODO: move to django-common app.
     Converts a string to a class.
     Courtesy: http://stackoverflow.com/questions/452969/does-python-have-an-equivalent-to-java-class-forname/452981#452981
     """

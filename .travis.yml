@@ -21,7 +21,6 @@ addons:
   postgresql: "9.6"
 install:
   - pip install -q Django==$DJANGO
-  - pip install django-common-helpers
   - pip install coveralls
   - pip install -r test_requirements.pip
 script:

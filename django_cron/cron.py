@@ -1,6 +1,7 @@
-from django.conf import settings
+import logging
 
-from django_common.helper import send_mail
+from django.conf import settings
+from django.core.mail import EmailMessage
 
 from django_cron import CronJobBase, Schedule, get_class
 from django_cron.models import CronJobLog
@@ -35,7 +36,7 @@ class FailedRunsNotificationCronJob(CronJobBase):
                     message += 'Job ran at %s : \n\n %s \n\n' % (job.start_time, job.message)
 
             if failures >= min_failures:
-                send_mail(
+                self.send_mail(
                     '%s%s failed %s times in a row!' % (
                         failed_runs_cronjob_email_prefix,
                         cron.code,
@@ -44,3 +45,15 @@ class FailedRunsNotificationCronJob(CronJobBase):
                     message,
                     settings.DEFAULT_FROM_EMAIL, emails
                 )
+
+    def send_mail(self, subject, message, from_email, recipient_emails):
+        try:
+            email = EmailMessage(subject, message, from_email, recipient_emails)
+            email.send()
+        except Exception as e:
+            logging.error(
+                'Error sending message [%s] from %s to %s %s' % (
+                    subject, from_email,
+                    recipient_emails, e
+                )
+            )
