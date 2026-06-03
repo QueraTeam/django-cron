@@ -261,7 +261,7 @@ class CronJobBase(object):
             for time_data in cron_job.schedule.run_at_times:
                 user_time = time.strptime(time_data, "%H:%M")
                 now = get_current_time()
-                actual_time = time.strptime("%s:%s" % (now.hour, now.minute), "%H:%M")
+                actual_time = time.strptime(f"{now.hour}:{now.minute}", "%H:%M")
                 if actual_time >= user_time:
                     qset = CronJobLog.objects.filter(
                         code=cron_job.code,
@@ -385,7 +385,7 @@ class CronJobManager(object):
                 trace = "".join(traceback.format_exception(ex_type, ex_value, ex_traceback))
                 self.make_log(self.msg, trace, success=False)
             except Exception as e:
-                err_msg = "Error saving cronjob log message: %s" % e
+                err_msg = f"Error saving cronjob log message: {e}"
                 logger.error(err_msg)
 
         return True  # prevent exception propagation
@@ -396,7 +396,7 @@ class CronJobManager(object):
         """
         cron_job_class = self.cron_job_class
         if not issubclass(cron_job_class, CronJobBase):
-            raise Exception('The cron_job to be run must be a subclass of %s' % CronJobBase.__name__)
+            raise Exception(f'The cron_job to be run must be a subclass of {CronJobBase.__name__}')
 
         with self.lock_class(cron_job_class, self.silent):
             self.cron_job = cron_job_class()
@@ -412,7 +412,7 @@ class CronJobManager(object):
         try:
             return get_class(name)
         except Exception as err:
-            raise Exception("invalid lock module %s. Can't use it: %s." % (name, err))
+            raise Exception(f"invalid lock module {name}. Can't use it: {err}.")
 
     @property
     def msg(self):

@@ -33,15 +33,11 @@ class FailedRunsNotificationCronJob(CronJobBase):
             for job in jobs:
                 if not job.is_success:
                     failures += 1
-                    message += 'Job ran at %s : \n\n %s \n\n' % (job.start_time, job.message)
+                    message += f'Job ran at {job.start_time} : \n\n {job.message} \n\n'
 
             if failures >= min_failures:
                 self.send_mail(
-                    '%s%s failed %s times in a row!' % (
-                        failed_runs_cronjob_email_prefix,
-                        cron.code,
-                        min_failures,
-                    ),
+                    f'{failed_runs_cronjob_email_prefix}{cron.code} failed {min_failures} times in a row!',
                     message,
                     settings.DEFAULT_FROM_EMAIL, emails
                 )
@@ -52,8 +48,5 @@ class FailedRunsNotificationCronJob(CronJobBase):
             email.send()
         except Exception as e:
             logging.error(
-                'Error sending message [%s] from %s to %s %s' % (
-                    subject, from_email,
-                    recipient_emails, e
-                )
+                f'Error sending message [{subject}] from {from_email} to {recipient_emails} {e}'
             )

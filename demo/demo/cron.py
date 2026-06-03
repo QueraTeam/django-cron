@@ -14,10 +14,7 @@ def send_mail(subject, message, from_email, recipient_emails):
         email.send()
     except Exception as e:
         logging.error(
-            'Error sending message [%s] from %s to %s %s' % (
-                subject, from_email,
-                recipient_emails, e
-            )
+            f'Error sending message [{subject}] from {from_email} to {recipient_emails} {e}'
         )
 
 
@@ -31,7 +28,7 @@ class EmailUserCountCronJob(CronJobBase):
     code = 'cron.EmailUsercountCronJob'
 
     def do(self):
-        message = 'Active users: %d' % User.objects.count()
+        message = f'Active users: {User.objects.count()}'
         print(message)
         send_mail(
             '[django-cron demo] Active user count',
@@ -51,7 +48,7 @@ class EmailUserCountCronJob2(CronJobBase):
     code = 'cron.EmailUsercountCronJob'
 
     def do(self):
-        message = 'Active users: %d' % User.objects.count()
+        message = f'Active users: {User.objects.count()}'
         print(message)
         send_mail(
             '[django-cron demo] Active user count',

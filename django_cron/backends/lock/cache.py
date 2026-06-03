@@ -35,12 +35,8 @@ class CacheLock(DjangoCronJobLock):
     def lock_failed_message(self):
         started = self.get_running_lock_date()
         msgs = [
-            "%s: lock has been found. Other cron started at %s" % (
-                self.job_name, started
-            ),
-            "Current timeout for job %s is %s seconds (cache key name is '%s')." % (
-                self.job_name, self.timeout, self.lock_name
-            )
+            f"{self.job_name}: lock has been found. Other cron started at {started}",
+            f"Current timeout for job {self.job_name} is {self.timeout} seconds (cache key name is '{self.lock_name}')."
         ]
         return msgs
 

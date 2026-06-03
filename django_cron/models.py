@@ -17,7 +17,7 @@ class CronJobLog(models.Model):
     ran_at_time = models.TimeField(null=True, blank=True, db_index=True, editable=False)
 
     def __unicode__(self):
-        return '%s (%s)' % (self.code, 'Success' if self.is_success else 'Fail')
+        return f"{self.code} ({'Success' if self.is_success else 'Fail'})"
 
     class Meta:
         indexes = [
