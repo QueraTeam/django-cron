@@ -6,20 +6,20 @@ try:
     from setuptools.command.test import test
 except ImportError:
     from ez_setup import use_setuptools
+
     use_setuptools()
     from setuptools import setup, find_packages
     from setuptools.command.test import test
 import os
 
-
 here = os.path.dirname(os.path.abspath(__file__))
-f = open(os.path.join(here,  'README.md'))
+f = open(os.path.join(here, 'README.md'))
 long_description = f.read().strip()
 f.close()
 
 setup(
     name='django-cron',
-    version='0.6.2',
+    version='0.7.0',
     author='Sumit Chachra',
     author_email='chachra@tivix.com',
     url='http://github.com/tivix/django-cron',
@@ -29,8 +29,7 @@ setup(
     keywords='django cron',
     zip_safe=False,
     install_requires=[
-        'Django>=1.8.0',
-        'django-common-helpers>=0.6.4'
+        'Django>=5.2',
     ],
     test_suite='runtests.runtests',
     include_package_data=True,

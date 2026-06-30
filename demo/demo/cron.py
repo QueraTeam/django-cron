@@ -1,21 +1,34 @@
+import logging
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import User
-from datetime import datetime
-from django_common.helper import send_mail
+from django.core.mail import EmailMessage
+
 from django_cron import CronJobBase, Schedule
 
 
-class EmailUsercountCronJob(CronJobBase):
+def send_mail(subject, message, from_email, recipient_emails):
+    try:
+        email = EmailMessage(subject, message, from_email, recipient_emails)
+        email.send()
+    except Exception as e:
+        logging.error(
+            f'Error sending message [{subject}] from {from_email} to {recipient_emails} {e}'
+        )
+
+
+class EmailUserCountCronJob(CronJobBase):
     """
     Send an email with the user count.
     """
-    RUN_EVERY_MINS = 0 if settings.DEBUG else 360   # 6 hours when not DEBUG
+    RUN_EVERY_MINS = 0 if settings.DEBUG else 360  # 6 hours when not DEBUG
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'cron.EmailUsercountCronJob'
 
     def do(self):
-        message = 'Active users: %d' % User.objects.count()
+        message = f'Active users: {User.objects.count()}'
         print(message)
         send_mail(
             '[django-cron demo] Active user count',
@@ -25,7 +38,7 @@ class EmailUsercountCronJob(CronJobBase):
         )
 
 
-class EmailUsercountCronJob2(CronJobBase):
+class EmailUserCountCronJob2(CronJobBase):
     """
     Send an email with the user count.
     """
@@ -35,7 +48,7 @@ class EmailUsercountCronJob2(CronJobBase):
     code = 'cron.EmailUsercountCronJob'
 
     def do(self):
-        message = 'Active users: %d' % User.objects.count()
+        message = f'Active users: {User.objects.count()}'
         print(message)
         send_mail(
             '[django-cron demo] Active user count',

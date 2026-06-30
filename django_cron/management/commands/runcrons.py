@@ -44,7 +44,7 @@ class Command(BaseCommand):
             crons_to_run = [get_class(x) for x in cron_class_names]
         except Exception:
             error = traceback.format_exc()
-            self.stdout.write('Make sure these are valid cron class names: %s\n%s' % (cron_class_names, error))
+            self.stdout.write(f'Make sure these are valid cron class names: {cron_class_names}\n{error}')
             return
 
         for cron_class in crons_to_run:
